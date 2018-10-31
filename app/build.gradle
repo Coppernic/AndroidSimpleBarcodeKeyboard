@@ -1,22 +1,49 @@
+plugins {
+    id "fr.coppernic.versioning" version "3.1.2"
+}
+
 apply plugin: 'com.android.application'
+apply plugin: 'fr.coppernic.extensions'
+
+copper {
+    projectName = "AndroidSimpleBarcodeKeyboard"
+
+    publications {
+        artiConfig = "arti01"
+    }
+}
+
+apply plugin: 'fr.coppernic.android'
 
 android {
     compileSdkVersion 29
     buildToolsVersion '29.0.3'
     defaultConfig {
-        applicationId "rkr.simplekeyboard.inputmethod"
+        applicationId "fr.coppernic.app.keyboard.barcode"
         minSdkVersion 19
         targetSdkVersion 29
-        versionCode 69
-        versionName "3.19"
+        versionCode versioning.info.versionCode
+        versionName versioning.info.display
     }
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 }
 
+repositories {
+    maven { url "https://artifactory.coppernic.fr/artifactory/libs-release" }
+    google()
+    mavenCentral()
+    jcenter()
+    mavenLocal()
+}
+
+String support = '27.1.1'
+
 dependencies {
+    implementation "com.android.support:support-annotations:$support"
+    implementation 'fr.coppernic.sdk.core:CpcCore:1.8.5'
 }

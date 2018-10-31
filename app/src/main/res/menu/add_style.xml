@@ -17,10 +17,12 @@
 ** limitations under the License.
 */
 -->
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:tools="http://schemas.android.com/tools"
+      xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/action_add_style"
         android:icon="@drawable/ic_add_circle_white_24dp"
         android:title="@string/add_style"
-        android:showAsAction="always" />
+        android:showAsAction="always"
+        tools:ignore="AppCompatResource"/>
 </menu>

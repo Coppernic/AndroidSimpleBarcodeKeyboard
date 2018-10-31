@@ -16,6 +16,7 @@
 
 package rkr.simplekeyboard.inputmethod.keyboard.internal;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -33,6 +34,7 @@ import rkr.simplekeyboard.inputmethod.keyboard.Key;
 /**
  * The pop up key preview view.
  */
+@SuppressLint("AppCompatCustomView")
 public class KeyPreviewView extends TextView {
     private final Rect mBackgroundPadding = new Rect();
     private static final HashSet<String> sNoScaleXTextSet = new HashSet<>();
