@@ -319,6 +319,42 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
+    public final static String ACTION_SCAN_SUCCESS = "fr.coppernic.intent.scansuccess";
+    public final static String ACTION_SCAN_ERROR = "fr.coppernic.intent.scanfailed";
+    public final static String BARCODE_DATA = "BarcodeData";
+
+    private BroadcastReceiver scanResult = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+
+            if (action != null && action.equals(ACTION_SCAN_SUCCESS)) {
+                String dataRead = intent.getStringExtra(BARCODE_DATA);
+                Log.d("CPC-WEDGE", "Barcode data " + dataRead);
+                mInputLogic.sendDownUpKeyEvent(KeyEvent.KEYCODE_SHIFT_LEFT);
+                onTextInput(dataRead);
+                Log.d("CPC-WEDGE", "onTextInput performed");
+            } /*else if (intent.getAction().equals(ACTION_SCAN_ERROR)) {
+                // Handle error
+            }*/
+        }
+    };
+
+    private void registerBarcodeReceiver() {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(ACTION_SCAN_SUCCESS);
+        filter.addAction(ACTION_SCAN_ERROR);
+        registerReceiver(scanResult, filter);
+    }
+
+    private void unregisterBarcodeReceiver() {
+        try {
+            unregisterReceiver(scanResult);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public LatinIME() {
         super();
         mSettings = Settings.getInstance();
@@ -345,6 +381,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final IntentFilter filter = new IntentFilter();
         filter.addAction(AudioManager.RINGER_MODE_CHANGED_ACTION);
         registerReceiver(mRingerModeChangeReceiver, filter);
+        registerBarcodeReceiver();
     }
 
     // Has to be package-visible for unit tests
@@ -362,6 +399,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public void onDestroy() {
         mSettings.onDestroy();
         unregisterReceiver(mRingerModeChangeReceiver);
+        unregisterBarcodeReceiver();
         super.onDestroy();
     }
 
