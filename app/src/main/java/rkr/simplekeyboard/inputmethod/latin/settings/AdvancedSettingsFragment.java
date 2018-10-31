@@ -158,7 +158,7 @@ public final class AdvancedSettingsFragment extends SubScreenFragment {
                 if (value < 0) {
                     return res.getString(R.string.settings_system_default);
                 }
-                return res.getString(R.string.abbreviation_unit_milliseconds, value);
+                return res.getString(R.string.abbreviation_unit_milliseconds, Integer.toString(value));
             }
         });
     }
@@ -250,7 +250,7 @@ public final class AdvancedSettingsFragment extends SubScreenFragment {
 
             @Override
             public String getValueText(final int value) {
-                return res.getString(R.string.abbreviation_unit_milliseconds, value);
+                return res.getString(R.string.abbreviation_unit_milliseconds, Integer.toString(value));
             }
 
             @Override
@@ -302,7 +302,7 @@ public final class AdvancedSettingsFragment extends SubScreenFragment {
                 if (value < 0) {
                     return res.getString(R.string.settings_system_default);
                 }
-                return res.getString(R.string.abbreviation_unit_percent, value);
+                return res.getString(R.string.abbreviation_unit_percent, Integer.toString(value));
             }
 
             @Override

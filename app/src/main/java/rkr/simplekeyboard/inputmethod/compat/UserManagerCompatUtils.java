@@ -66,13 +66,18 @@ public final class UserManagerCompatUtils {
         if (METHOD_isUserUnlocked == null) {
             return LOCK_STATE_UNKNOWN;
         }
-        final UserManager userManager = context.getSystemService(UserManager.class);
-        if (userManager == null) {
-            return LOCK_STATE_UNKNOWN;
-        }
-        final Boolean result =
-                (Boolean) CompatUtils.invoke(userManager, null, METHOD_isUserUnlocked);
-        if (result == null) {
+        final UserManager userManager;
+        final Boolean result;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            userManager = context.getSystemService(UserManager.class);
+            if (userManager == null) {
+                return LOCK_STATE_UNKNOWN;
+            }
+            result = (Boolean) CompatUtils.invoke(userManager, null, METHOD_isUserUnlocked);
+            if (result == null) {
+                return LOCK_STATE_UNKNOWN;
+            }
+        } else {
             return LOCK_STATE_UNKNOWN;
         }
         return result ? LOCK_STATE_UNLOCKED : LOCK_STATE_LOCKED;
