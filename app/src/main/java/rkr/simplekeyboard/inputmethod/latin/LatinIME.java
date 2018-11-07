@@ -51,6 +51,7 @@ import java.io.PrintWriter;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
+import fr.coppernic.sdk.barcode.GlobalConfig;
 import rkr.simplekeyboard.inputmethod.R;
 import rkr.simplekeyboard.inputmethod.compat.EditorInfoCompatUtils;
 import rkr.simplekeyboard.inputmethod.compat.ViewOutlineProviderCompatUtils;
@@ -103,6 +104,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private AlertDialog mOptionsDialog;
 
     public final UIHandler mHandler = new UIHandler(this);
+
+    GlobalConfig config;
 
     public static final class UIHandler extends LeakGuardHandlerWrapper<LatinIME> {
         private static final int MSG_UPDATE_SHIFT_STATE = 0;
@@ -331,7 +334,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
 
-            if (action != null && action.equals(ACTION_SCAN_SUCCESS)) {
+            if (action != null && action.equals(ACTION_SCAN_SUCCESS) && config.isFastWedgeEnabled()) {
                 String dataRead = intent.getStringExtra(BARCODE_DATA);
                 Log.d("CPC-WEDGE", "Barcode data " + dataRead);
                 mInputLogic.sendDownUpKeyEvent(KeyEvent.KEYCODE_SHIFT_LEFT);
@@ -385,6 +388,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         filter.addAction(AudioManager.RINGER_MODE_CHANGED_ACTION);
         registerReceiver(mRingerModeChangeReceiver, filter);
         registerBarcodeReceiver();
+
+        config = GlobalConfig.Builder.get(this);
     }
 
     private void loadSettings() {
