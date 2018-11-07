@@ -45,7 +45,5 @@ String support = '27.1.1'
 
 dependencies {
     implementation "com.android.support:support-annotations:$support"
-
-    implementation 'fr.coppernic.sdk.core:CpcCore:1.8.5'
-
+    implementation 'fr.coppernic.sdk.barcode:CpcBarcode:3.4.3'
 }
