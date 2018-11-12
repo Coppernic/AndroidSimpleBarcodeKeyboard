@@ -336,6 +336,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 Log.d("CPC-WEDGE", "Barcode data " + dataRead);
                 mInputLogic.sendDownUpKeyEvent(KeyEvent.KEYCODE_SHIFT_LEFT);
                 onTextInput(dataRead);
+                if(!config.getWedgeSuffix().isEmpty()){ // enter suffix enabled
+                    onTextInput("\n");
+                }
                 Log.d("CPC-WEDGE", "onTextInput performed");
             } /*else if (intent.getAction().equals(ACTION_SCAN_ERROR)) {
                 // Handle error
