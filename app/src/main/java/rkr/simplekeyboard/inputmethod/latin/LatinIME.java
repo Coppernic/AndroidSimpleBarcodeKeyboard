@@ -16,6 +16,7 @@
 
 package rkr.simplekeyboard.inputmethod.latin;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -51,6 +52,9 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import fr.coppernic.sdk.barcode.GlobalConfig;
+import fr.coppernic.sdk.prefs.CpcPrefs;
+import fr.coppernic.sdk.utils.core.CpcBytes;
+import fr.coppernic.sdk.utils.core.CpcDefinitions;
 import rkr.simplekeyboard.inputmethod.R;
 import rkr.simplekeyboard.inputmethod.annotations.UsedForTesting;
 import rkr.simplekeyboard.inputmethod.compat.EditorInfoCompatUtils;
@@ -337,12 +341,34 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 mInputLogic.sendDownUpKeyEvent(KeyEvent.KEYCODE_SHIFT_LEFT);
                 onTextInput(dataRead);
                 if(!config.getWedgeSuffix().isEmpty()){ // enter suffix enabled
-                    onTextInput("\n");
+                    Log.d("CPC-WEDGE","suffix : " + CpcBytes.byteArrayToString(config.getWedgeSuffix().getBytes()));
+                    byte[] suffix = config.getWedgeSuffix().getBytes();
+                    if(suffix[suffix.length -1] == (byte) 0x0D) {
+                        Log.d("CPC-WEDGE","Enter!");
+                        onTextInput("\n");
+                    }
                 }
                 Log.d("CPC-WEDGE", "onTextInput performed");
-            } /*else if (intent.getAction().equals(ACTION_SCAN_ERROR)) {
-                // Handle error
-            }*/
+            }
+        }
+    };
+
+    private BroadcastReceiver agridentReceiver = new BroadcastReceiver() {
+        @SuppressLint("WrongConstant")
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d("CPC-WEDGE", "agridentReceiver");
+            if (intent.getAction().equals(CpcDefinitions.ACTION_AGRIDENT_SUCCESS)) {
+                // Displays data read in the intent edit text
+                String dataRead = intent.getStringExtra(CpcDefinitions.KEY_BARCODE_DATA);
+                Log.d("CPC-WEDGE", "Barcode data " + dataRead);
+                mInputLogic.sendDownUpKeyEvent(KeyEvent.KEYCODE_SHIFT_LEFT);
+                onTextInput(dataRead);
+                CpcPrefs pref = new CpcPrefs(context);
+                if (pref.getBoolean("key_wedge_scan_enter", false)) {
+                    onTextInput("\r\n");
+                }
+            }
         }
     };
 
@@ -353,9 +379,17 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         registerReceiver(scanResult, filter);
     }
 
-    private void unregisterBarcodeReceiver() {
+    private void registerAgridentReceiver() {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(CpcDefinitions.ACTION_AGRIDENT_SUCCESS);
+        filter.addAction(CpcDefinitions.ACTION_AGRIDENT_ERROR);
+        registerReceiver(agridentReceiver, filter);
+    }
+
+    private void unregisterCoppernicReceiver() {
         try {
             unregisterReceiver(scanResult);
+            unregisterReceiver(agridentReceiver);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -388,6 +422,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         filter.addAction(AudioManager.RINGER_MODE_CHANGED_ACTION);
         registerReceiver(mRingerModeChangeReceiver, filter);
         registerBarcodeReceiver();
+        registerAgridentReceiver();
 
         config = GlobalConfig.Builder.get(this);
     }
@@ -407,7 +442,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public void onDestroy() {
         mSettings.onDestroy();
         unregisterReceiver(mRingerModeChangeReceiver);
-        unregisterBarcodeReceiver();
+        unregisterCoppernicReceiver();
         super.onDestroy();
     }
 
