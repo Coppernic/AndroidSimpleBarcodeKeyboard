@@ -140,15 +140,15 @@
 
     <string translatable="false" name="abbreviation_unit_percent"><xliff:g id="PERCENTS">%s</xliff:g>%%</string>
 
-    <string name="prefs_keyboard_height_settings">Keyboard height</string>
-    <string name="keyboard_color">Set custom keyboard color</string>
-    <string name="hide_special_chars">Hide special characters</string>
-    <string name="hide_language_switch_key">Hide language switch key</string>
-    <string name="show_number_row">Show separate number row</string>
-    <string name="space_swipe">Space swipe cursor move</string>
-    <string name="delete_swipe">Delete swipe</string>
-    <string name="matching_navbar_color">Use matching navigation bar color</string>
-    <string name="setup_message">Simple Keyboard is not enabled. Click OK to open Languages &amp; Input settings. You will need to select Simple Keyboard in your current keyboard to use it.</string>
+    <string translatable="false" name="prefs_keyboard_height_settings">Keyboard height</string>
+    <string translatable="false" name="keyboard_color">Set custom keyboard color</string>
+    <string translatable="false" name="hide_special_chars">Hide special characters</string>
+    <string translatable="false" name="hide_language_switch_key">Hide language switch key</string>
+    <string translatable="false" name="show_number_row">Show separate number row</string>
+    <string translatable="false" name="space_swipe">Space swipe cursor move</string>
+    <string translatable="false" name="delete_swipe">Delete swipe</string>
+    <string translatable="false" name="matching_navbar_color">Use matching navigation bar color</string>
+    <string translatable="false" name="setup_message">Simple Keyboard is not enabled. Click OK to open Languages &amp; Input settings. You will need to select Simple Keyboard in your current keyboard to use it.</string>
 
     <!-- Standard message to dismiss a dialog box -->
     <!-- Title of the button in a dialog box. The button takes the user to the keyboard settings. [CHAR LIMIT=15] -->

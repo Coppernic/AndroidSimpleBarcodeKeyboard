@@ -23,6 +23,7 @@ import android.view.inputmethod.InputMethodSubtype;
 
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import rkr.simplekeyboard.inputmethod.R;
 import rkr.simplekeyboard.inputmethod.latin.common.LocaleUtils;
@@ -191,7 +192,34 @@ public final class SubtypeLocaleUtils {
             final RunInLocale<String> getExceptionalName = new RunInLocale<String>() {
                 @Override
                 protected String job(final Resources res) {
-                    return res.getString(exceptionalNameResId);
+                    String ret;
+                    try {
+                        ret = res.getString(exceptionalNameResId);
+                    } catch (Exception e) {
+                        Log.e(TAG, e.toString());
+                        String key = "";
+                        if(sExceptionalLocaleDisplayedInRootLocale.containsValue(exceptionalNameResId)) {
+                            for(Map.Entry<String, Integer> entry : sExceptionalLocaleDisplayedInRootLocale.entrySet()) {
+                                if(entry.getValue().equals(exceptionalNameResId)) {
+                                    key = entry.getKey();
+                                    break;
+                                }
+                            }
+                        } else if (sExceptionalLocaleToNameIdsMap.containsValue(exceptionalNameResId)) {
+                            for(Map.Entry<String, Integer> entry : sExceptionalLocaleToNameIdsMap.entrySet()) {
+                                if(entry.getValue().equals(exceptionalNameResId)) {
+                                    key = entry.getKey();
+                                    break;
+                                }
+                            }
+                        } else {
+                            key = "";
+                        }
+                        Log.w(TAG, "Looking for " + exceptionalNameResId
+                                   + " res id that should correspond to " + key);
+                        ret = "";
+                    }
+                    return ret;
                 }
             };
             displayName = getExceptionalName.runInLocale(sResources, displayLocale);
